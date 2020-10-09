@@ -1,5 +1,6 @@
 import { Select, Chip, MenuItem, InputLabel, Input } from '@material-ui/core';
 import React, { Fragment } from 'react'
+import { FixedSizeList } from "react-window";
 import styles from './ChipsSelect.module.scss';
 
 const ChipsSelect: React.FunctionComponent<{
@@ -19,6 +20,26 @@ const ChipsSelect: React.FunctionComponent<{
     const stopPropagation = (e: React.MouseEvent) => {
         e.stopPropagation();
     }
+    const rowClickHandler = (index: number) => {
+        const clickedOption = options[index];
+        const elementIndex = selectedOptions.indexOf(clickedOption);
+        let newSelections = [...selectedOptions];
+
+        if (elementIndex < 0) {
+            newSelections.push(clickedOption);
+        } else {
+            newSelections.splice(elementIndex, 1);
+        }
+        onSelectChange(newSelections);
+    }
+
+    const Row = (data: any) => {
+        console.log('DATA', data);
+        const itemValue = data.data[data.index];
+        return (
+            <MenuItem style={data.style} onClick={() => rowClickHandler(data.index)} key={itemValue} value={itemValue}>{itemValue}</MenuItem>
+        )
+    }
     return (
         <Fragment>
             <InputLabel shrink>{label}</InputLabel>
@@ -27,6 +48,17 @@ const ChipsSelect: React.FunctionComponent<{
                 fullWidth
                 displayEmpty
                 input={<Input />}
+                MenuProps={{
+                    anchorOrigin: {
+                        vertical: "bottom",
+                        horizontal: "left"
+                    },
+                    transformOrigin: {
+                        vertical: "top",
+                        horizontal: "left"
+                    },
+                    getContentAnchorEl: null
+                }}
                 onChange={(e) => selectionsChanged(e)}
                 renderValue={(selected) => {
                     return (
@@ -40,9 +72,16 @@ const ChipsSelect: React.FunctionComponent<{
                         </div>
                     )
                 }}>
-                {options.map((name) => (
-                    <MenuItem key={name} value={name}>{name}</MenuItem>
-                ))}</Select>
+                <FixedSizeList
+                    height={options.length * 35 > 600 ? 600 : options.length * 35}
+                    itemData={options}
+                    itemCount={options.length}
+                    itemSize={35}
+                    width={'100%'}
+                >
+                    {Row}
+                </FixedSizeList>
+            </Select>
         </Fragment>
     )
 }
