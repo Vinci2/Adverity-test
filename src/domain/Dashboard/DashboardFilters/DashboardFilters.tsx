@@ -4,12 +4,15 @@ import { Button } from '@material-ui/core';
 import styles from './DashboardFilters.module.scss';
 import ChipsSelect from '../../../UI/ChipsSelect/ChipsSelect';
 
-export default function DashboardFilters(
-    { availableDataSources, availableCampaigns, applyHandler }: {
-        availableDataSources: string[],
-        availableCampaigns: string[],
-        applyHandler: (dataSources: string[], campaigns: string[]) => void
-    }) {
+interface Props {
+    availableDataSources: string[];
+    availableCampaigns: string[];
+    applyHandler: (dataSources: string[], campaigns: string[]) => void
+}
+
+const DashboardFilters: React.FunctionComponent<Props> = (
+    { availableDataSources, availableCampaigns, applyHandler }) => {
+
     const [selectedCampaigns, setCampaign] = useState<string[]>([]);
     const [selectedDataSources, setSelectedDataSources] = useState<string[]>([]);
 
@@ -30,7 +33,6 @@ export default function DashboardFilters(
                         onSelectChange={(e) => setSelectedDataSources(e)} ></ChipsSelect>
                 </div>
                 <div className={styles['form__input']}>
-
                     <ChipsSelect
                         selectedOptions={selectedCampaigns}
                         options={availableCampaigns}
@@ -49,3 +51,5 @@ export default function DashboardFilters(
         </div>
     )
 }
+
+export default DashboardFilters;

@@ -5,7 +5,7 @@ import { getAdvertisingData } from './services/DashboardHttpService'
 import styles from './Dashboard.module.scss'
 import { getChartData } from './services/DashboardDataParserService'
 
-export default function Dashboard() {
+const Dashboard: React.FunctionComponent = () => {
     const [state, setState] = useState<any>({});
     const [chartData, setChartData] = useState<any[]>([]);
     const [areFiltersHidden, setFiltersHidden] = useState<boolean>(false);
@@ -49,3 +49,5 @@ export default function Dashboard() {
         </div>
     )
 }
+
+export default Dashboard;

@@ -3,9 +3,15 @@ import React, { Fragment } from 'react'
 import { FixedSizeList } from "react-window";
 import styles from './ChipsSelect.module.scss';
 
-const ChipsSelect: React.FunctionComponent<{
-    selectedOptions: string[], options: string[], label: string, onSelectChange: (selections: string[]) => void
-}> = ({ selectedOptions, options, label, onSelectChange }) => {
+interface Props {
+    selectedOptions: string[];
+    options: string[];
+    label: string;
+    onSelectChange: (selections: string[]) => void;
+}
+
+const ChipsSelect: React.FunctionComponent<Props> = (
+    { selectedOptions, options, label, onSelectChange }) => {
 
     const selectionsChanged = (event: React.ChangeEvent<{ value: unknown }>) => {
         const newSelectionList = event.target.value as string[];
@@ -33,11 +39,13 @@ const ChipsSelect: React.FunctionComponent<{
         onSelectChange(newSelections);
     }
 
-    const Row = (data: any) => {
-        console.log('DATA', data);
+    const OptionsRow = (data: any) => {
         const itemValue = data.data[data.index];
         return (
-            <MenuItem style={data.style} onClick={() => rowClickHandler(data.index)} key={itemValue} value={itemValue}>{itemValue}</MenuItem>
+            <MenuItem style={data.style}
+                onClick={() => rowClickHandler(data.index)}
+                key={itemValue}
+                value={itemValue}>{itemValue}</MenuItem>
         )
     }
     return (
@@ -79,7 +87,7 @@ const ChipsSelect: React.FunctionComponent<{
                     itemSize={35}
                     width={'100%'}
                 >
-                    {Row}
+                    {OptionsRow}
                 </FixedSizeList>
             </Select>
         </Fragment>

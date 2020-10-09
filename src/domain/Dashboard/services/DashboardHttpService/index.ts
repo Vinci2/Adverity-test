@@ -2,10 +2,10 @@ import { computeDashboardModel, parseCSV } from '../DashboardDataParserService';
 
 const ADVERTISING_DATA_URL = 'files/data.csv';
 
-export function getAdvertisingData() {
-    return fetchCsv()
-        .then(parseCSV)
-        .then(computeDashboardModel)
+export async function getAdvertisingData() {
+    const fileData = await fetchCsv();
+    const parsedCsv = await parseCSV(fileData);
+    return computeDashboardModel(parsedCsv);
 }
 
 async function fetchCsv() {

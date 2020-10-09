@@ -3,7 +3,7 @@ import styles from './MainHeader.module.scss';
 import logo from '../../assets/icons/brand-logo.svg';
 import { Link, } from 'react-router-dom';
 
-export default function MainHeader() {
+const MainHeader: React.FunctionComponent = () => {
     return (
         <div className={styles['main-header__container']}>
             <div className={styles['main-header__brand-container']}>
@@ -16,3 +16,5 @@ export default function MainHeader() {
         </div>
     )
 }
+
+export default MainHeader;

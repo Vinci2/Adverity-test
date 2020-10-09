@@ -2,15 +2,16 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import styles from './WelcomePage.module.scss';
 
-export default function WelcomePage() {
+const WelcomePage: React.FunctionComponent = () => {
     return (
         <div className={styles['welcome-page__container']}>
-            This is  entry test for adverity company. Test prepared by Pawel Kokociński.
+            This is entry project for position of Frontend Developer. App prepared by Pawel Kokocinski.
             Please go to Dashboard
             <div>
                 <Link to={'/dashboard'}>Go to dashboard</Link>
-
             </div>
         </div>
     )
 }
+
+export default WelcomePage;

@@ -1,7 +1,11 @@
 import React from 'react'
 import { LineChart, Line, CartesianGrid, Legend, Tooltip, XAxis, YAxis, ResponsiveContainer } from 'recharts';
 
-export default function DashboardChart({ chartData }: { chartData: any[] }) {
+interface Props {
+    chartData: any[];
+}
+
+const DashboardChart: React.FunctionComponent<Props> = ({ chartData }) => {
     const chartMargins = {
         top: 5, right: 30, left: 20, bottom: 5,
     }
@@ -20,3 +24,5 @@ export default function DashboardChart({ chartData }: { chartData: any[] }) {
         </ResponsiveContainer>
     )
 }
+
+export default DashboardChart;
