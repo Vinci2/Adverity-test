@@ -1,0 +1,44 @@
+.main-header {
+    &__container {
+
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        width: 100%;
+        height: 120px;
+        margin-bottom: 10px;
+        background: linear-gradient(
+            145deg,
+            rgba(27, 156, 156, 1) 0%,
+            rgba(89, 133, 196, 1) 50%,
+            rgba(120, 89, 166, 1) 100%
+        );
+        background-image: linear-gradient(145deg, rgb(27, 156, 156) 0%, rgb(89, 133, 196) 50%, rgb(120, 89, 166) 100%);
+        background-position-x: initial;
+        background-position-y: initial;
+        background-size: initial;
+        // background-repeat-x: initial;
+        // background-repeat-y: initial;
+        background-attachment: initial;
+        background-origin: initial;
+        background-clip: initial;
+        background-color: initial;
+    }
+
+    &__brand-container {
+        
+    }
+
+    &__menu-container {
+    
+    }
+
+    &__link {
+        color: white;
+        font-weight: 700;
+        margin: 0 10px;
+    }
+
+    
+
+}
