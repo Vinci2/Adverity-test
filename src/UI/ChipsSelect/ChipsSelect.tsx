@@ -1,5 +1,5 @@
 import { Select, Chip, MenuItem, InputLabel, Input } from '@material-ui/core';
-import React, { Fragment } from 'react'
+import React from 'react'
 import { FixedSizeList } from "react-window";
 import styles from './ChipsSelect.module.scss';
 
@@ -39,17 +39,17 @@ const ChipsSelect: React.FunctionComponent<Props> = (
         onSelectChange(newSelections);
     }
 
-    const OptionsRow = (data: any) => {
-        const itemValue = data.data[data.index];
+    const OptionsRow = ({data, index, style}: {data: string[], index:number, style: any}) => {
+        const itemValue = data[index];
         return (
-            <MenuItem style={data.style}
-                onClick={() => rowClickHandler(data.index)}
+            <MenuItem style={style}
+                onClick={() => rowClickHandler(index)}
                 key={itemValue}
                 value={itemValue}>{itemValue}</MenuItem>
         )
     }
     return (
-        <Fragment>
+        <>
             <InputLabel shrink>{label}</InputLabel>
             <Select className={styles.select} multiple
                 value={selectedOptions}
@@ -81,7 +81,7 @@ const ChipsSelect: React.FunctionComponent<Props> = (
                     )
                 }}>
                 <FixedSizeList
-                    height={options.length * 35 > 600 ? 600 : options.length * 35}
+                    height={options.length * 35 > 300 ? 300 : options.length * 35}
                     itemData={options}
                     itemCount={options.length}
                     itemSize={35}
@@ -90,7 +90,7 @@ const ChipsSelect: React.FunctionComponent<Props> = (
                     {OptionsRow}
                 </FixedSizeList>
             </Select>
-        </Fragment>
+        </>
     )
 }
 

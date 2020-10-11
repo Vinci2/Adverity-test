@@ -1,11 +1,10 @@
 import Papa from 'papaparse';
+import { AdvertisingRecord, DashboardState } from '../../Dashboard.models';
 
-export const computeDashboardModel = (parsedData: any) => {
-    console.log('Parsed Data', parsedData);
-
-    const availableSources = new Set();
-    const availableCampaigns = new Set();
-    const chartData = parsedData.data.reduce((acc: any[], [date, dataSource, campaign, clicks, impressions]: any, currIndex: number) => {
+export const computeDashboardModel = ({data}: {data: Array<string[]>}): DashboardState => {
+    const availableSources = new Set<string>();
+    const availableCampaigns = new Set<string>();
+    const chartData = data.reduce((acc: AdvertisingRecord[], [date, dataSource, campaign, clicks, impressions]: string[], currIndex: number) => {
         if (currIndex < 2 || !date) { return acc; }
         availableCampaigns.add(campaign);
         availableSources.add(dataSource);
@@ -19,9 +18,9 @@ export const computeDashboardModel = (parsedData: any) => {
                     clicks: currentClicks,
                     impressions: currentImpressions || 0
                 },
-                dataSource: {
+                dataSources: {
                     [dataSource]: {
-                        campaign: {
+                        campaigns: {
                             [campaign]: {
                                 clicks: currentClicks,
                                 impressions: currentImpressions || 0
@@ -35,8 +34,8 @@ export const computeDashboardModel = (parsedData: any) => {
             return acc;
         }
         const prevAll = prevRecord.all
-        const prevDataSource = prevRecord.dataSource;
-        const prevCampaign = prevRecord.dataSource[dataSource] ? prevRecord.dataSource[dataSource].campaign : {}
+        const prevDataSource = prevRecord.dataSources;
+        const prevCampaign = prevRecord.dataSources[dataSource] ? prevRecord.dataSources[dataSource].campaigns : {}
 
         acc[acc.length - 1] = {
             ...prevRecord,
@@ -44,10 +43,10 @@ export const computeDashboardModel = (parsedData: any) => {
                 clicks: prevAll.clicks + currentClicks,
                 impressions: prevAll.impressions + (currentImpressions || 0)
             },
-            dataSource: {
+            dataSources: {
                 ...prevDataSource,
                 [dataSource]: {
-                    campaign: {
+                    campaigns: {
                         ...prevCampaign,
                         [campaign]: {
                             clicks: currentClicks,
@@ -62,8 +61,8 @@ export const computeDashboardModel = (parsedData: any) => {
 
     return {
         availableCampaigns: Array.from(availableCampaigns),
-        availableSources: Array.from(availableSources),
-        chartData
+        availableDataSources: Array.from(availableSources),
+        advertisingRecords: chartData
     }
 }
 
@@ -72,10 +71,13 @@ export const parseCSV = (csv: string | undefined) => {
     return Papa.parse(csv);
 }
 
-export const getChartData = (dataSources: string[], campaigns: string[], chartData: any[]) => {
+export const getChartData = (dataSources: string[], campaigns: string[], advertisingRecords: AdvertisingRecord[] | undefined) => {
+    if (!advertisingRecords) {
+        return []
+    }
     const getAllDataSources = !dataSources.length;
     const getAllCampaigns = !campaigns.length;
-    return chartData.map((record) => {
+    return advertisingRecords.map((record) => {
         const seriesPoint = {
             date: record.date,
             clicks: 0,
@@ -86,19 +88,19 @@ export const getChartData = (dataSources: string[], campaigns: string[], chartDa
             seriesPoint.impressions = record.all.impressions
             return seriesPoint;
         }
-        dataSources = getAllDataSources ? Object.keys(record.dataSource) : dataSources;
+        dataSources = getAllDataSources ? Object.keys(record.dataSources) : dataSources;
         dataSources.forEach((dataSource) => {
-            if (!record.dataSource[dataSource]) {
+            if (!record.dataSources[dataSource]) {
                 return seriesPoint;
             }
 
-            campaigns = getAllCampaigns ? campaigns = Object.keys(record.dataSource[dataSource].campaign) : campaigns
+            campaigns = getAllCampaigns ? campaigns = Object.keys(record.dataSources[dataSource].campaigns) : campaigns
             campaigns.forEach((campaign) => {
-                if (!record.dataSource[dataSource].campaign[campaign]) {
+                if (!record.dataSources[dataSource].campaigns[campaign]) {
                     return seriesPoint;
                 }
-                seriesPoint.clicks += record.dataSource[dataSource].campaign[campaign].clicks;
-                seriesPoint.impressions += record.dataSource[dataSource].campaign[campaign].impressions;
+                seriesPoint.clicks += record.dataSources[dataSource].campaigns[campaign].clicks;
+                seriesPoint.impressions += record.dataSources[dataSource].campaigns[campaign].impressions;
             })
         })
         return seriesPoint;

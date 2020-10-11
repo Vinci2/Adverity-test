@@ -1,3 +1,4 @@
+import { ParseResult } from 'papaparse';
 import { computeDashboardModel, parseCSV } from '../DashboardDataParserService';
 
 const ADVERTISING_DATA_URL = 'files/data.csv';
@@ -5,7 +6,7 @@ const ADVERTISING_DATA_URL = 'files/data.csv';
 export async function getAdvertisingData() {
     const fileData = await fetchCsv();
     const parsedCsv = await parseCSV(fileData);
-    return computeDashboardModel(parsedCsv);
+    return computeDashboardModel(parsedCsv as ParseResult<string[]>);
 }
 
 async function fetchCsv() {

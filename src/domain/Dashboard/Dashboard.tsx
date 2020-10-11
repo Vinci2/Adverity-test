@@ -4,24 +4,23 @@ import DashboardFilters from './DashboardFilters/DashboardFilters'
 import { getAdvertisingData } from './services/DashboardHttpService'
 import styles from './Dashboard.module.scss'
 import { getChartData } from './services/DashboardDataParserService'
+import {  ChartPoint, DashboardState } from './Dashboard.models'
 
 const Dashboard: React.FunctionComponent = () => {
-    const [state, setState] = useState<any>({});
-    const [chartData, setChartData] = useState<any[]>([]);
+    const [dashboardState, setState] = useState<DashboardState>();
+    const [chartData, setChartData] = useState<ChartPoint[]>([]);
     const [areFiltersHidden, setFiltersHidden] = useState<boolean>(false);
 
     useEffect(() => {
         getAdvertisingData().then((newDashboardState) => {
-            console.log('NEW DATA: ', newDashboardState);
             setState(newDashboardState)
-            const newChartData = getChartData([], [], newDashboardState.chartData)
+            const newChartData = getChartData([], [], newDashboardState.advertisingRecords)
             setChartData(newChartData);
         })
     }, [])
 
     const filterChangedHandler = (sources: string[], campaigns: string[]): void => {
-        const newChartData = getChartData(sources, campaigns, state.chartData);
-        console.log('NEW CHART DATA: ', newChartData);
+        const newChartData = getChartData(sources, campaigns, dashboardState?.advertisingRecords);
         setChartData(newChartData);
     }
 
@@ -31,15 +30,13 @@ const Dashboard: React.FunctionComponent = () => {
 
     const filtersToggleClass = areFiltersHidden ? styles['filters__container--hidden'] : '';
 
-    console.log('filtersToggleClass', filtersToggleClass);
-
     return (
         <div className={styles.dashboard__container}>
             <button onClick={toggleFiltersHandler}>ClickMe</button>
             <div className={`${styles.filters__container} ${filtersToggleClass}`}>
                 <DashboardFilters
-                    availableDataSources={state.availableSources || []}
-                    availableCampaigns={state.availableCampaigns || []}
+                    availableDataSources={dashboardState?.availableDataSources || []}
+                    availableCampaigns={dashboardState?.availableCampaigns || []}
                     applyHandler={filterChangedHandler}></DashboardFilters>
             </div>
 
